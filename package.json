@@ -1,0 +1,25 @@
+{
+  "name": "devtinder-be",
+  "version": "1.0.0",
+  "description": "Tinder for Devs",
+  "keywords": [
+    "Node.js",
+    "JS",
+    "BackEnd",
+    "FrontEnd"
+  ],
+  "license": "ISC",
+  "author": "Charith",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pbk-Charith/DevTinder-BE.git"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
