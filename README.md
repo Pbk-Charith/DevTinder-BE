@@ -191,3 +191,155 @@ Always write:
 
 Static → Dynamic → Wildcard
 Middleware order also matters
+
+-----------------------------------------------------
+# About middlewares in expressjs
+
+Middleware in Express.js is one of the most important concepts. It acts like a middle layer between the request and the response.
+
+# What is Middleware?
+
+A middleware is a function that:
+
+Has access to request (req), response (res), and next()
+Executes before the final route handler
+Can modify request/response or stop the request
+
+👉 Think of it like a pipeline:
+
+Request → Middleware → Middleware → Route → Response
+
+# Basic Syntax
+app.use((req, res, next) => {
+    console.log("Middleware executed");
+    next(); // pass control to next middleware
+});
+
+------------------------------------------------
+
+# 🔹 Types of Middleware
+1. Application-level Middleware
+
+Runs for all routes or specific routes.
+
+app.use((req, res, next) => {
+    console.log("Runs for every request");
+    next();
+});
+
+-------------------------------------------------
+
+# 👉 For specific route:
+
+app.get('/user', (req, res, next) => {
+    console.log("User route middleware");
+    next();
+}, (req, res) => {
+    res.send("User Page");
+});
+
+---------------------------------------------
+
+# 2. Router-level Middleware
+
+Used with Express Router.
+
+const router = express.Router();
+
+router.use((req, res, next) => {
+    console.log("Router middleware");
+    next();
+});
+
+---------------------------------------------
+# 3. Built-in Middleware
+
+Provided by Express.
+
+express.json() → parse JSON data
+express.urlencoded() → parse form data
+express.static() → serve static files
+app.use(express.json());
+---------------------------------------------
+
+# 4. Third-party Middleware
+
+Installed via npm.
+
+Examples:
+
+morgan → logging
+cors → handle CORS
+body-parser → parse request body
+const morgan = require('morgan');
+app.use(morgan('dev'));
+
+------------------------------------------
+# 5. Error-handling Middleware
+
+Special middleware with 4 parameters
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send("Something broke!");
+});
+----------------------------------------
+
+# 🔹 next() Function
+Passes control to next middleware
+If not called → request will hang
+app.use((req, res, next) => {
+    console.log("Step 1");
+    next();
+});
+---------------------------------------
+
+# 🔹 Example Flow
+app.use((req, res, next) => {
+    console.log("Middleware 1");
+    next();
+});
+
+app.use((req, res, next) => {
+    console.log("Middleware 2");
+    next();
+});
+
+app.get('/', (req, res) => {
+    res.send("Hello World");
+});
+
+👉 Output:
+
+Middleware 1
+Middleware 2
+Hello World
+
+-----------------------------------------------
+🔹 Why Middleware is Important
+Authentication (check login)
+Logging requests
+Validation
+Error handling
+Parsing request data
+
+------------------------------------------------
+🔹 Real-world Example (Auth Middleware)
+const auth = (req, res, next) => {
+    if (req.headers.authorization) {
+        next();
+    } else {
+        res.status(401).send("Unauthorized");
+    }
+};
+
+app.get('/dashboard', auth, (req, res) => {
+    res.send("Welcome to dashboard");
+});
+
+----------------------------------------------------
+🔥 Simple Way to Remember
+
+👉 Middleware = "function that runs before your route and controls the flow"
+
+----------------------------------------------------------------------------------------
