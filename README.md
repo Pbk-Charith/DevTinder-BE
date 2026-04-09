@@ -343,3 +343,115 @@ app.get('/dashboard', auth, (req, res) => {
 👉 Middleware = "function that runs before your route and controls the flow"
 
 ----------------------------------------------------------------------------------------
+
+# Difference between app.use and app.all
+
+🔹 Core Difference
+
+| Feature        | `app.use()`      | `app.all()`          |
+| -------------- | ---------------- | -------------------- |
+| Purpose        | Middleware       | Route handler        |
+| HTTP Methods   | ALL (implicitly) | ALL (explicitly)     |
+| Path Matching  | Prefix match     | Exact match          |
+| `next()` usage | Required usually | Optional             |
+| Use Case       | Global logic     | Route-specific logic |
+
+🔹 1. app.use() (Middleware)
+
+👉 Used to apply middleware to all routes or path prefixes
+
+Example:
+app.use('/user', (req, res, next) => {
+    console.log("Middleware for /user");
+    next();
+});
+Works for:
+/user
+/user/profile
+/user/settings
+
+👉 It matches everything that starts with /user
+
+------------------------------------------------------------------------
+
+🔹 2. app.all() (Route Handler)
+
+👉 Used to handle all HTTP methods for a specific route
+
+Example:
+app.all('/user', (req, res) => {
+    res.send("Handles all methods");
+});
+Works for:
+GET /user
+POST /user
+PUT /user
+DELETE /user
+
+❌ Does NOT work for:
+
+/user/profile
+
+👉 It matches only the exact route
+
+🔹 Key Difference (Simple Way)
+
+👉 app.use() = “Run this for everything starting with this path”
+👉 app.all() = “Handle all HTTP methods for this exact route”
+
+-------------------------------------------------------------------------
+
+🔹 Practical Example
+app.use('/user', (req, res, next) => {
+    console.log("Middleware hit");
+    next();
+});
+
+app.all('/user', (req, res) => {
+    res.send("User route");
+});
+Request:
+GET /user/profile
+
+👉 Output:
+
+app.use() → runs ✅
+app.all() → does NOT run ❌
+
+-----------------------------------------------------------------------
+
+🔹 When to Use What?
+✅ Use app.use() for:
+Authentication
+Logging
+Parsing request body
+Global middleware
+✅ Use app.all() for:
+Handling all HTTP methods of a route
+Catch-all route logic
+Route-specific guards
+
+-------------------------------------------
+
+🔹 Bonus Tip (Important ⚠️)
+
+You can combine them:
+
+app.all('/admin', (req, res, next) => {
+    console.log("Admin check");
+    next();
+});
+
+app.get('/admin', (req, res) => {
+    res.send("Admin page");
+});
+
+👉 app.all() runs first, then app.get()
+
+🔹 Final Summary
+app.use() → middleware, prefix matching
+app.all() → route handler, exact matching
+app.use() is more flexible and commonly used
+app.all() is useful for handling all methods of one route
+
+-----------------------------------------------------------------------------

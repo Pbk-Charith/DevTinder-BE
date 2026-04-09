@@ -1,62 +1,31 @@
 const express = require('express');
 const app = express();
 
+const { adminAuth, UserAuth }= require('./Middlewares/auth');
 
-// app.use("/", (req,res, next) => {
-//     // console.log("api1");
-//     res.send("api1");
-//     next();
-// });
+app.use("/admin", adminAuth);
 
-// app.get("/api2", 
-//     (req,res,next) => {
-//     console.log("api2");
-//     // res.send("api2");
-//     next();
-// }, 
-// (req,res,next) => {    
-//     console.log("api2-2");
-//     // res.send("api2-2");
-//     next();
-// }, 
-// (req,res,next) => {    
-//     console.log("api2-3");
-//     // res.send("api2-3");
-//     next();
-// }
-// );
-
-// app.use("/hello1",(req, res, next) => {
-//     console.log("Step 1");
-//     // res.send("Hello World1");
-//     next();
-// });
-
-// app.get("/hello2", (req, res, next) => {
-//     console.log("Step 2");
-//     next();
-//     // res.send("Hello World2");
-// });
-app.use((req, res, next) => {
-    // res.send("Hello Worldssss");
-    console.log("Middleware 0");
-    next();
+app.use("/user/login", (req,res) => {
+    console.log("This is the user login route");
+    res.send("This is the user login data");
 });
 
-// Middleware 1
-app.use((req, res, next) => {
-    console.log("Middleware 1");
-    next();
+app.use("/user", UserAuth ,(req,res, next) => {
+    console.log("This is the user route");
+    res.send("This is the user data");
 });
 
-// Middleware 2
-app.use((req, res, next) => {
-    console.log("Middleware 2");
-    res.send("Hello World from Middleware 2");
-    next();
+app.get("/admin/getAllData", (req, res) => {
+    res.send("This is the admin data");
 });
 
-// Route
+app.get("/admin/deleteUser", (req, res) => {
+    res.send("User deleted successfully");
+});
+
+app.get("/admin/UpdateUser", (req, res) => {
+    res.send("User updated successfully");
+});
 
 app.listen(3000, () => {
     console.log("server is running on port 3000");
