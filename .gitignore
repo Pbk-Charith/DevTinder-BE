@@ -2,3 +2,6 @@ node_modules
 postman
 .postman
 .gitignore
+.env
+package-lock.json
+package.json
