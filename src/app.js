@@ -20,17 +20,30 @@ app.post("/Signup", async (req, res) => {
 
 app.get("/user", async (req, res) => {
     const userage = req.body.age;
+
     try {
-        const users = await User.find({ age: userage });
-        if(users.length === 0){
+        const user = await User.findOne({ age: userage });
+
+        if (!user) {
             return res.status(404).send("No users found with the specified age");
-        }else{
-            res.status(200).send(users);
         }
-    }
-    catch(err){
+
+        res.status(200).send(user);
+    } catch (err) {
         res.status(500).send("Error fetching users");
     }
+
+    // try {
+    //     const users = await User.find({ age: userage });
+    //     if(users.length === 0){
+    //         return res.status(404).send("No users found with the specified age");
+    //     }else{
+    //         res.status(200).send(users);
+    //     }
+    // }
+    // catch(err){
+    //     res.status(500).send("Error fetching users");
+    // }
 });
 
 app.get("/feed", (req, res) => {
