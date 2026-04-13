@@ -71,6 +71,18 @@ app.delete("/user", async (req, res) => {
     }
 });
 
+app.patch("/user", async (req, res) => {
+    const userid = req.body.id;
+    const updateData = req.body;
+    try {
+        await User.findByIdAndUpdate({_id: userid}, updateData);
+        res.status(200).send("User updated successfully");
+    }
+    catch (error) {
+        res.status(500).send("Error Updating User");
+    }
+});
+
 connectDB().then(() => {
     console.log("Connected to MongoDB...");
     app.listen(3000, () => {
