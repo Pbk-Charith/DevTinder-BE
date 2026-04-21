@@ -6,7 +6,7 @@ const User = require("./models/user");
 app.use(express.json());
 app.post("/Signup", async (req, res) => {
 
-    // console.log(req.body);
+    console.log(req.body);
     
     const user = new User(req.body);
     try{
@@ -47,7 +47,6 @@ app.get("/user", async (req, res) => {
 });
 
 app.get("/feed", async (req, res) => {
-
     try {
         const users = await User.find();
         res.status(200).send(users);
@@ -75,7 +74,7 @@ app.patch("/user", async (req, res) => {
     const userid = req.body.id;
     const updateData = req.body;
     try {
-        await User.findByIdAndUpdate({_id: userid}, updateData);
+        await User.findByIdAndUpdate({_id: userid}, updateData, {runValidators: true});
         res.status(200).send("User updated successfully");
     }
     catch (error) {
