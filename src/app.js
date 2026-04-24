@@ -5,14 +5,23 @@ const User = require("./models/user");
 
 app.use(express.json());
 app.post("/Signup", async (req, res) => {
-
     console.log(req.body);
-    
     const user = new User(req.body);
     try{
+        const {email, password, age} = req.body;
+        if(!email || !password || !age){
+            return res.status(400).send("Email, Password and Age are mandatory fields");
+        }
+        if(password.length < 8){
+            res.status(400).send("Password must be at least 8 characters long");
+        }
+        if(age < 18){
+            res.status(400).send("You must be at least 18 years old to sign up");
+        }
         await user.save();
         res.status(201).send("User created successfully");
     } catch (error) {
+        console.error("Error creating user:", error);
         res.status(500).send("Error creating user");
     }
     
@@ -70,15 +79,26 @@ app.delete("/user", async (req, res) => {
     }
 });
 
-app.patch("/user", async (req, res) => {
-    const userid = req.body.id;
+app.patch("/user/:id", async (req, res) => {
+    const userid = req.params?.id;
     const updateData = req.body;
     try {
+        const ALLOWED_UPDATES = ["age", "gender", "address", "skills"];
+        const isupdateallowed = Object.keys(updateData).every((k)=>ALLOWED_UPDATES.includes(k));
+        if(!isupdateallowed){
+            throw new Error ("Update Not Allowed")
+        }
+        if(updateData.skills?.length > 10){
+            throw new Error ("Max 10 skills are allowed.")
+        }
+        if(updateData.age < 18){
+            throw new Error ("You must cross 18 to get PAN CARD")
+        }
         await User.findByIdAndUpdate({_id: userid}, updateData, {runValidators: true});
-        res.status(200).send("User updated successfully");
+        res.status(200).send("User updated successfully ");
     }
     catch (error) {
-        res.status(500).send("Error Updating User");
+        res.status(500).send("Error Updating User" + " : " + error.message);
     }
 });
 
